@@ -1,0 +1,56 @@
+<!-- roleSelect.wxml -->
+<!-- AI生成：中央音乐学院实践平台MVP - 角色选择页 -->
+<view class="container">
+  <view class="header">
+    <text class="title">选择您的身份</text>
+    <text class="subtitle">请选择您的身份（可多选）</text>
+  </view>
+
+  <view class="role-list">
+    <!-- 音乐人才角色 -->
+    <view 
+      class="role-card {{isTalent ? 'selected' : ''}}" 
+      bindtap="toggleRole" 
+      data-role="talent"
+    >
+      <view class="role-icon">🎵</view>
+      <view class="role-info">
+        <text class="role-title">我是音乐人才</text>
+        <text class="role-desc">中央音乐学院在校学生或校友，寻找音乐实践机会</text>
+      </view>
+      <view class="check-mark" wx:if="{{isTalent}}">✓</view>
+    </view>
+
+    <!-- 甲方角色 -->
+    <view 
+      class="role-card {{isEmployer ? 'selected' : ''}}" 
+      bindtap="toggleRole" 
+      data-role="employer"
+    >
+      <view class="role-icon">🏢</view>
+      <view class="role-info">
+        <text class="role-title">我是甲方</text>
+        <text class="role-desc">需要招募音乐人才，发布实践需求</text>
+      </view>
+      <view class="check-mark" wx:if="{{isEmployer}}">✓</view>
+    </view>
+  </view>
+
+  <view class="tips">
+    <text class="tips-text">💡 您可以同时拥有两种身份，认证后即可使用对应功能</text>
+  </view>
+
+  <view class="action-area">
+    <button 
+      class="confirm-btn" 
+      type="primary" 
+      bindtap="confirmRegister"
+      disabled="{{(!isTalent && !isEmployer) || submitting}}"
+    >
+      {{submitting ? '注册中...' : '确认并继续认证'}}
+    </button>
+    <view class="skip-link" bindtap="skipRegister">
+      <text>暂不注册，先看看</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,161 @@
+/* chat.wxss */
+/* 聊天详情页样式 */
+
+page {
+  height: 100%;
+  overflow: hidden;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #ededed;
+  overflow: hidden;
+}
+
+/* 消息列表区域 */
+.message-list {
+  flex: 1;
+  height: 0; /* 关键：让 flex:1 生效 */
+  padding: 20rpx;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 20rpx 0;
+}
+
+.load-more text {
+  color: #4A90D9;
+  font-size: 26rpx;
+}
+
+/* 消息项 */
+.message-item {
+  display: flex;
+  margin-bottom: 30rpx;
+  align-items: flex-start;
+}
+
+/* 自己的消息 - 靠右 */
+.message-item.mine {
+  flex-direction: row-reverse;
+}
+
+/* 头像 */
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: #4A90D9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar text {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+/* 自己的头像背景色 */
+.message-item.mine .avatar {
+  background-color: #67c23a;
+}
+
+/* 消息内容区域 */
+.message-content {
+  max-width: 60%;
+  margin: 0 20rpx;
+}
+
+/* 消息气泡 */
+.message-bubble {
+  background-color: #fff;
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 自己的消息气泡 */
+.message-item.mine .message-bubble {
+  background-color: #95ec69;
+}
+
+.message-bubble text {
+  font-size: 30rpx;
+  line-height: 1.5;
+  color: #333;
+  word-break: break-all;
+}
+
+/* 消息时间 */
+.message-time {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 8rpx;
+  display: block;
+}
+
+.message-item.mine .message-time {
+  text-align: right;
+}
+
+/* 底部占位 */
+.bottom-placeholder {
+  height: 20rpx;
+}
+
+/* 输入区域 */
+.input-area {
+  display: flex;
+  align-items: flex-end;
+  padding: 16rpx 20rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background-color: #f5f5f5;
+  border-top: 1rpx solid #e5e5e5;
+  flex-shrink: 0; /* 不被压缩 */
+}
+
+.message-input {
+  flex: 1;
+  min-height: 72rpx;
+  max-height: 200rpx;
+  background-color: #fff;
+  border-radius: 8rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+.send-btn {
+  margin-left: 16rpx;
+  min-width: auto;
+  width: auto;
+  height: 64rpx;
+  line-height: 64rpx;
+  padding: 0 24rpx;
+  background-color: transparent;
+  color: #ccc;
+  font-size: 28rpx;
+  border-radius: 8rpx;
+  margin-bottom: 4rpx;
+}
+
+/* 有内容时发送按钮变绿色 */
+.send-btn.active {
+  background-color: #07c160;
+  color: #fff;
+}
+
+/* 键盘占位 */
+.keyboard-placeholder {
+  transition: height 0.2s;
+}

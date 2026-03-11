@@ -1,0 +1,136 @@
+<!-- publish.wxml -->
+<!-- AI生成：中央音乐学院实践平台MVP - 发布需求页 -->
+<view class="container">
+  <!-- 未登录状态 -->
+  <view class="auth-block" wx:if="{{!currentUser}}">
+    <text class="auth-icon">🔐</text>
+    <text class="auth-title">请先登录</text>
+    <text class="auth-desc">登录后才能发布需求</text>
+    <button class="auth-btn" type="primary" bindtap="goLogin">立即登录</button>
+  </view>
+
+  <!-- 未认证状态 -->
+  <view class="auth-block" wx:elif="{{currentUser && !canPublish}}">
+    <text class="auth-icon">📋</text>
+    <text class="auth-title">需要完成认证</text>
+    <text class="auth-desc" wx:if="{{!currentUser.isEmployer}}">
+      您尚未选择甲方身份，请在个人中心添加甲方角色
+    </text>
+    <text class="auth-desc" wx:elif="{{currentUser.employerCertStatus === 'pending'}}">
+      您的甲方认证材料正在审核中，请耐心等待
+    </text>
+    <text class="auth-desc" wx:else>
+      完成甲方认证后即可发布需求
+    </text>
+    <button 
+      class="auth-btn" 
+      type="primary" 
+      bindtap="goCertify"
+      wx:if="{{currentUser.isEmployer && currentUser.employerCertStatus !== 'pending'}}"
+    >去认证</button>
+  </view>
+
+  <!-- 发布表单 -->
+  <view class="form-area" wx:else>
+    <!-- 标题 -->
+    <view class="form-item">
+      <text class="form-label">需求标题 *</text>
+      <input 
+        class="form-input" 
+        placeholder="例如：婚礼钢琴伴奏" 
+        value="{{title}}"
+        bindinput="onTitleInput"
+        maxlength="30"
+      />
+    </view>
+
+    <!-- 详情 -->
+    <view class="form-item">
+      <text class="form-label">需求详情 *</text>
+      <textarea 
+        class="form-textarea" 
+        placeholder="请详细描述您的需求，包括时间、地点、具体要求等"
+        value="{{description}}"
+        bindinput="onDescInput"
+        maxlength="500"
+      />
+    </view>
+
+    <!-- 实践补贴 -->
+    <view class="form-item">
+      <text class="form-label">实践补贴 *</text>
+      <input 
+        class="form-input" 
+        placeholder="例如：500元/场 或 面议" 
+        value="{{salary}}"
+        bindinput="onSalaryInput"
+        maxlength="20"
+      />
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="form-item">
+      <text class="form-label">联系方式 *</text>
+      <input 
+        class="form-input" 
+        placeholder="手机号或微信号（仅认证学生可见）" 
+        value="{{contact}}"
+        bindinput="onContactInput"
+        maxlength="50"
+      />
+      <text class="form-hint">🔒 联系方式仅对已认证的央音学生可见</text>
+    </view>
+
+    <!-- 技能标签 -->
+    <view class="form-item">
+      <text class="form-label">技能标签 * （最多5个）</text>
+      
+      <!-- 已选标签 -->
+      <view class="selected-skills" wx:if="{{skills.length > 0}}">
+        <view class="skill-tag selected" wx:for="{{skills}}" wx:key="*this">
+          <text>{{item}}</text>
+          <text class="remove-btn" bindtap="removeSkill" data-index="{{index}}">×</text>
+        </view>
+      </view>
+      
+      <!-- 快捷选择 -->
+      <view class="skill-options">
+        <text class="option-label">快捷选择：</text>
+        <view class="options-wrap">
+          <view 
+            wx:for="{{skillOptions}}" 
+            wx:key="*this" 
+            class="skill-option {{skills.includes(item) ? 'disabled' : ''}}"
+            bindtap="selectSkillOption"
+            data-skill="{{item}}"
+          >{{item}}</view>
+        </view>
+      </view>
+      
+      <!-- 自定义输入 -->
+      <view class="skill-input-wrap">
+        <input 
+          class="skill-input" 
+          placeholder="输入自定义标签" 
+          value="{{skillInput}}"
+          bindinput="onSkillInput"
+          bindconfirm="addSkill"
+          maxlength="10"
+        />
+        <button class="add-skill-btn" size="mini" bindtap="addSkill">添加</button>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="action-area">
+      <button 
+        class="submit-btn" 
+        type="primary" 
+        bindtap="submitJob"
+        disabled="{{submitting}}"
+      >
+        {{submitting ? '发布中...' : '发布需求'}}
+      </button>
+    </view>
+  </view>
+</view>

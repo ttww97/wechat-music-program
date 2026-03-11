@@ -1,0 +1,59 @@
+<!-- chat.wxml -->
+<!-- 聊天详情页 -->
+<view class="chat-container">
+  <!-- 消息列表区域 -->
+  <scroll-view 
+    class="message-list" 
+    scroll-y 
+    scroll-into-view="{{scrollToView}}"
+    scroll-with-animation
+  >
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore}}" bindtap="loadMoreMessages">
+      <text>加载更早消息</text>
+    </view>
+    
+    <!-- 消息列表 -->
+    <view 
+      wx:for="{{messages}}" 
+      wx:key="_id" 
+      id="msg-{{item._id}}"
+      class="message-item {{item.senderId === currentUser._openid ? 'mine' : 'other'}}"
+    >
+      <!-- 头像 -->
+      <view class="avatar">
+        <text>{{item.senderId === currentUser._openid ? (currentUser.realName ? currentUser.realName[0] : '我') : (otherUser.realName ? otherUser.realName[0] : '对')}}</text>
+      </view>
+      
+      <!-- 消息内容 -->
+      <view class="message-content">
+        <view class="message-bubble">
+          <text>{{item.content}}</text>
+        </view>
+        <text class="message-time">{{item.timeStr}}</text>
+      </view>
+    </view>
+    
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder" id="bottom"></view>
+  </scroll-view>
+  
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <textarea 
+      class="message-input" 
+      placeholder="输入消息..." 
+      value="{{inputValue}}"
+      bindinput="onInput"
+      bindconfirm="sendMessage"
+      adjust-position="{{false}}"
+      auto-height
+      maxlength="500"
+      show-confirm-bar="{{false}}"
+    />
+    <view class="send-btn {{canSend ? 'active' : ''}}" bindtap="sendMessage">发送</view>
+  </view>
+</view>
+
+<!-- 键盘占位 -->
+<view style="height: {{keyboardHeight}}px;"></view>

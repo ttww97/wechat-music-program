@@ -1,0 +1,150 @@
+/* chatList.wxss */
+/* 聊天列表页样式 */
+
+.container {
+  min-height: 100vh;
+  background-color: #ededed;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.empty-tip {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 会话列表 */
+.conversation-list {
+  background-color: #fff;
+  width: 100%;
+}
+
+/* 会话项 */
+.conversation-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 30rpx;
+  background-color: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.conversation-item:active {
+  background-color: #f5f5f5;
+}
+
+/* 头像 */
+.avatar {
+  position: relative;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background-color: #4A90D9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 24rpx;
+}
+
+.avatar text {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+/* 未读红点 */
+.unread-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20rpx;
+  height: 20rpx;
+  background-color: #f56c6c;
+  border-radius: 50%;
+  border: 4rpx solid #fff;
+}
+
+/* 会话信息 */
+.conversation-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.last-message {
+  flex: 1;
+  font-size: 26rpx;
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 未读数量角标 */
+.unread-badge {
+  min-width: 36rpx;
+  height: 36rpx;
+  background-color: #f56c6c;
+  border-radius: 18rpx;
+  padding: 0 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16rpx;
+}
+
+.unread-badge text {
+  color: #fff;
+  font-size: 22rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 28rpx;
+}

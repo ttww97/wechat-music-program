@@ -1,0 +1,105 @@
+<!-- profile.wxml -->
+<!-- AI生成：中央音乐学院实践平台MVP - 个人中心页 -->
+<view class="container">
+  <!-- 未登录状态 -->
+  <view class="login-card" wx:if="{{!isLoggedIn}}">
+    <view class="avatar-placeholder">👤</view>
+    <text class="login-tip">登录后体验更多功能</text>
+    <button class="login-btn" type="primary" bindtap="handleLogin">微信一键登录</button>
+  </view>
+
+  <!-- 已登录状态 -->
+  <view class="user-card" wx:else>
+    <view class="user-info">
+      <view class="avatar">
+        <text>{{currentUser.realName ? currentUser.realName[0] : '用'}}</text>
+      </view>
+      <view class="info-text">
+        <view class="name-row">
+          <text class="user-name">{{currentUser.realName || '用户'}}</text>
+          <view class="role-tag talent" wx:if="{{currentUser.isTalent}}">音乐人才</view>
+          <view class="role-tag employer" wx:if="{{currentUser.isEmployer}}">甲方</view>
+          <view class="role-tag none" wx:if="{{!currentUser.isTalent && !currentUser.isEmployer}}">未选择角色</view>
+        </view>
+        <!-- 认证状态 -->
+        <view class="cert-row">
+          <view class="cert-item" wx:if="{{currentUser.isTalent}}">
+            <text wx:if="{{currentUser.talentCertStatus === 'approved'}}">✅ 人才已认证</text>
+            <text wx:elif="{{currentUser.talentCertStatus === 'pending'}}">⏳ 人才审核中</text>
+            <text wx:else>❌ 人才未认证</text>
+          </view>
+          <view class="cert-item" wx:if="{{currentUser.isEmployer}}">
+            <text wx:if="{{currentUser.employerCertStatus === 'approved'}}">✅ 甲方已认证</text>
+            <text wx:elif="{{currentUser.employerCertStatus === 'pending'}}">⏳ 甲方审核中</text>
+            <text wx:else>❌ 甲方未认证</text>
+          </view>
+          <view class="cert-item" wx:if="{{!currentUser.isTalent && !currentUser.isEmployer}}">
+            <text>请先选择您的身份</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-card" wx:if="{{isLoggedIn}}">
+    <!-- 消息入口 -->
+    <view class="menu-item" bindtap="goMessages">
+      <view class="menu-left">
+        <text class="menu-icon">💬</text>
+        <text class="menu-text">我的消息</text>
+      </view>
+      <view class="menu-right">
+        <view class="unread-badge" wx:if="{{unreadCount > 0}}">
+          <text>{{unreadCount > 99 ? '99+' : unreadCount}}</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 认证入口 -->
+    <view class="menu-item" bindtap="goCertify" wx:if="{{needCertify}}">
+      <view class="menu-left">
+        <text class="menu-icon">📋</text>
+        <text class="menu-text">实名认证</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-hint">去认证</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 我的发布（甲方可见） -->
+    <view class="menu-item" bindtap="goMyJobs" wx:if="{{currentUser.isEmployer}}">
+      <view class="menu-left">
+        <text class="menu-icon">📝</text>
+        <text class="menu-text">我的发布</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 我的评论（音乐人才可见） -->
+    <view class="menu-item" bindtap="goMyComments" wx:if="{{currentUser.isTalent}}">
+      <view class="menu-left">
+        <text class="menu-icon">⭐</text>
+        <text class="menu-text">我的评论</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-area" wx:if="{{isLoggedIn}}">
+    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+  </view>
+
+  <!-- 底部说明 - 仅登录后显示 -->
+  <view class="footer" wx:if="{{isLoggedIn}}">
+    <text>中央音乐学院 · 音乐人才对接平台</text>
+    <text class="version">MVP v1.0</text>
+  </view>
+</view>

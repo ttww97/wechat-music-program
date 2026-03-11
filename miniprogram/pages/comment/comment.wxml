@@ -1,0 +1,78 @@
+<!-- comment.wxml -->
+<!-- AI生成：中央音乐学院实践平台MVP - 评论页面 -->
+<view class="container">
+  <!-- 无权限提示 -->
+  <view class="auth-block" wx:if="{{!canComment}}">
+    <text class="auth-icon">🔒</text>
+    <text class="auth-title">需要认证</text>
+    <text class="auth-desc" wx:if="{{!currentUser}}">
+      请先登录并完成音乐人才认证
+    </text>
+    <text class="auth-desc" wx:elif="{{!currentUser.isTalent}}">
+      仅音乐人才身份可以评论
+    </text>
+    <text class="auth-desc" wx:elif="{{currentUser.talentCertStatus === 'pending'}}">
+      您的认证材料正在审核中
+    </text>
+    <text class="auth-desc" wx:else>
+      完成音乐人才认证后即可评论
+    </text>
+    <button 
+      class="auth-btn" 
+      type="primary" 
+      bindtap="goCertify"
+      wx:if="{{currentUser && currentUser.isTalent && currentUser.talentCertStatus !== 'pending'}}"
+    >去认证</button>
+  </view>
+
+  <!-- 评论表单 -->
+  <view class="form-area" wx:else>
+    <!-- 评论对象 -->
+    <view class="job-info" wx:if="{{jobTitle}}">
+      <text class="job-label">评论需求：</text>
+      <text class="job-title">{{jobTitle}}</text>
+    </view>
+
+    <!-- 评分 -->
+    <view class="form-item">
+      <text class="form-label">您的评分</text>
+      <view class="rating-area">
+        <view 
+          wx:for="{{[1,2,3,4,5]}}" 
+          wx:key="*this" 
+          class="star {{rating >= item ? 'active' : ''}}"
+          bindtap="selectRating"
+          data-rating="{{item}}"
+        >
+          ★
+        </view>
+        <text class="rating-text">{{rating}}分</text>
+      </view>
+    </view>
+
+    <!-- 评论内容 -->
+    <view class="form-item">
+      <text class="form-label">评论内容（至少10字）</text>
+      <textarea 
+        class="form-textarea" 
+        placeholder="请分享您的真实体验和感受..."
+        value="{{content}}"
+        bindinput="onContentInput"
+        maxlength="300"
+      />
+      <text class="word-count">{{content.length}}/300</text>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="action-area">
+      <button 
+        class="submit-btn" 
+        type="primary" 
+        bindtap="submitComment"
+        disabled="{{submitting}}"
+      >
+        {{submitting ? '提交中...' : '提交评论'}}
+      </button>
+    </view>
+  </view>
+</view>

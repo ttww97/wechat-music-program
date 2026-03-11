@@ -1,0 +1,9 @@
+{
+  "name": "checkAuth",
+  "version": "1.0.0",
+  "description": "校验用户认证状态",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

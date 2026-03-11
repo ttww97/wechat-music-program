@@ -1,0 +1,123 @@
+<!-- certification.wxml -->
+<!-- AI生成：中央音乐学院实践平台MVP - 认证材料上传页 -->
+<view class="container">
+  <!-- 角色认证状态总览 -->
+  <view class="cert-overview">
+    <view class="cert-item" wx:if="{{currentUser.isTalent}}">
+      <text class="cert-role">音乐人才</text>
+      <text class="cert-status {{currentUser.talentCertStatus}}">
+        {{currentUser.talentCertStatus === 'approved' ? '✅ 已认证' : currentUser.talentCertStatus === 'pending' ? '⏳ 审核中' : '❌ 未认证'}}
+      </text>
+    </view>
+    <view class="cert-item" wx:if="{{currentUser.isEmployer}}">
+      <text class="cert-role">甲方</text>
+      <text class="cert-status {{currentUser.employerCertStatus}}">
+        {{currentUser.employerCertStatus === 'approved' ? '✅ 已认证' : currentUser.employerCertStatus === 'pending' ? '⏳ 审核中' : '❌ 未认证'}}
+      </text>
+    </view>
+  </view>
+
+  <!-- 认证身份选择（如果有多个角色需要认证） -->
+  <view class="role-selector" wx:if="{{needSelectRole}}">
+    <text class="selector-title">选择要认证的身份</text>
+    <view class="role-options">
+      <view 
+        class="role-option {{certRole === 'talent' ? 'selected' : ''}}" 
+        bindtap="selectCertRole" 
+        data-role="talent"
+        wx:if="{{currentUser.isTalent && currentUser.talentCertStatus !== 'approved' && currentUser.talentCertStatus !== 'pending'}}"
+      >
+        <text>音乐人才</text>
+      </view>
+      <view 
+        class="role-option {{certRole === 'employer' ? 'selected' : ''}}" 
+        bindtap="selectCertRole" 
+        data-role="employer"
+        wx:if="{{currentUser.isEmployer && currentUser.employerCertStatus !== 'approved' && currentUser.employerCertStatus !== 'pending'}}"
+      >
+        <text>甲方</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 认证说明 -->
+  <view class="tips-card" wx:if="{{certRole}}">
+    <view class="tips-title">📋 认证材料要求</view>
+    <view class="tips-content" wx:if="{{certRole === 'talent'}}">
+      <text>1. 学生证正面照片（清晰可见姓名、学号）</text>
+      <text>2. 身份证正面照片</text>
+      <text>3. 本人手持学生证照片（可选）</text>
+    </view>
+    <view class="tips-content" wx:else>
+      <text>1. 身份证正面照片</text>
+      <text>2. 本人手持身份证照片</text>
+      <text>3. 工作证明或名片（可选）</text>
+    </view>
+  </view>
+
+  <!-- 表单区域 -->
+  <view class="form-area" wx:if="{{certRole}}">
+    <!-- 真实姓名 -->
+    <view class="form-item">
+      <text class="form-label">真实姓名</text>
+      <input 
+        class="form-input" 
+        placeholder="请输入真实姓名" 
+        value="{{realName}}"
+        bindinput="onNameInput"
+      />
+    </view>
+
+    <!-- 认证图片 -->
+    <view class="form-item">
+      <text class="form-label">认证材料（最多3张）</text>
+      <view class="image-list">
+        <view 
+          wx:for="{{certImgs}}" 
+          wx:key="index" 
+          class="image-item"
+        >
+          <image 
+            src="{{item.tempPath || item.cloudPath || item}}" 
+            mode="aspectFill"
+            bindtap="previewImage"
+            data-url="{{item.tempPath || item.cloudPath || item}}"
+          ></image>
+          <view 
+            class="delete-btn" 
+            bindtap="deleteImage" 
+            data-index="{{index}}"
+          >×</view>
+        </view>
+        
+        <!-- 添加图片按钮 -->
+        <view 
+          class="add-image" 
+          bindtap="chooseImage"
+          wx:if="{{certImgs.length < maxImgCount}}"
+        >
+          <text class="add-icon">+</text>
+          <text class="add-text">添加图片</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="action-area" wx:if="{{certRole}}">
+    <button 
+      class="submit-btn" 
+      type="primary" 
+      bindtap="submitCertification"
+      disabled="{{submitting}}"
+    >
+      {{submitting ? '提交中...' : '提交认证'}}
+    </button>
+  </view>
+
+  <!-- 全部认证完成提示 -->
+  <view class="all-done" wx:if="{{allCertified}}">
+    <text class="done-icon">🎉</text>
+    <text class="done-text">您的所有身份均已认证通过</text>
+  </view>
+</view>

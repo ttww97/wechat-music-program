@@ -1,0 +1,65 @@
+<!-- myJobs.wxml -->
+<!-- 我的发布页面 -->
+<view class="container">
+  <!-- 需求列表 -->
+  <view class="job-list">
+    <view 
+      wx:for="{{jobList}}" 
+      wx:key="_id" 
+      class="job-card" 
+      bindtap="goJobDetail" 
+      data-id="{{item._id}}"
+    >
+      <view class="job-main">
+        <view class="job-header">
+          <text class="job-title">{{item.title}}</text>
+          <view class="status-tag {{item.status}}">
+            {{item.status === 'active' ? '进行中' : '已下架'}}
+          </view>
+        </view>
+        
+        <!-- 需求描述 -->
+        <view class="job-desc">
+          <text>{{item.description}}</text>
+        </view>
+        
+        <!-- 技能标签 -->
+        <view class="job-tags">
+          <text wx:for="{{item.skills}}" wx:for-item="skill" wx:key="*this" class="skill-tag">{{skill}}</text>
+        </view>
+        
+        <!-- 底部信息 -->
+        <view class="job-meta">
+          <text class="job-time">{{item.createTimeStr || '刚刚发布'}}</text>
+          <text class="job-salary">{{item.salary || '面议'}}</text>
+        </view>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="job-actions" catchtap="stopPropagation">
+        <view class="action-btn edit" catchtap="editJob" data-id="{{item._id}}">编辑</view>
+        <view class="action-btn {{item.status === 'active' ? 'offline' : 'online'}}" catchtap="toggleStatus" data-id="{{item._id}}" data-status="{{item.status}}">
+          {{item.status === 'active' ? '下架' : '上架'}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view wx:if="{{!loading && jobList.length === 0}}" class="empty-state">
+      <view class="empty-icon">📝</view>
+      <text class="empty-title">暂无发布</text>
+      <text class="empty-desc">您还没有发布任何需求</text>
+      <button class="publish-btn" type="primary" bindtap="goPublish">去发布</button>
+    </view>
+    
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-state">
+      <text>加载中...</text>
+    </view>
+    
+    <!-- 没有更多 -->
+    <view wx:if="{{!hasMore && jobList.length > 0}}" class="no-more">
+      <text>—— 已经到底了 ——</text>
+    </view>
+  </view>
+</view>

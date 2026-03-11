@@ -1,0 +1,57 @@
+<!-- miniprogram/pages/jobDetail/jobDetail.wxml -->
+<view class="container">
+  <view class="job-card" wx:if="{{job}}">
+    <!-- 标题与认证标识 -->
+    <view class="header">
+      <text class="title">{{job.title}}</text>
+      <image wx:if="{{job.employer.isCertified}}" class="cert-badge" src="/images/icons/business-active.png" mode="aspectFit"></image>
+    </view>
+
+    <!-- 实践补贴（原薪资） -->
+    <view class="info-row">
+      <text class="label">实践补贴</text>
+      <text class="salary">💰 {{job.salary}}</text>
+    </view>
+
+    <!-- 技能标签 -->
+    <view class="skills">
+      <text wx:for="{{job.skills}}" wx:key="index" class="skill-tag">{{item}}</text>
+    </view>
+
+    <!-- 详情内容 -->
+    <view class="description">
+      <text class="label">实践需求详情</text>
+      <text class="content">{{job.description}}</text>
+    </view>
+
+    <!-- 联系方式区域（安全核心） -->
+    <view class="contact-section">
+      <text class="label">联系方式</text>
+      
+      <!-- 已认证学生可见 -->
+      <view class="contact-box" wx:if="{{showContact}}">
+        <text class="contact-text">{{job.contact}}</text>
+        <!-- 非发布者显示发起聊天按钮 -->
+        <button class="chat-btn-inline" wx:if="{{!isOwner}}" bindtap="goChat">💬 发起聊天</button>
+        <text class="tip" wx:else>您发布的需求</text>
+      </view>
+
+      <!-- 未认证/非学生用户显示遮罩 -->
+      <view class="mask" wx:else>
+        <text class="mask-text">🔒 完成央音认证后可见</text>
+        <button class="cert-btn" bindtap="goCertify" type="primary" size="mini">立即认证</button>
+      </view>
+    </view>
+
+    <!-- 操作按钮区域 -->
+    <view class="action-area" wx:if="{{canComment}}">
+      <!-- 评价按钮 -->
+      <button class="comment-btn" bindtap="goComment">⭐ 评价此需求</button>
+    </view>
+  </view>
+
+  <!-- 加载中或空状态 -->
+  <view wx:else class="loading-state">
+    <text>加载中...</text>
+  </view>
+</view>

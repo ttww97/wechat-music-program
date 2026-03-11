@@ -1,0 +1,113 @@
+<!--index.wxml-->
+<!-- AI生成：中央音乐学院实践平台MVP - 需求列表页 | 风格参考：Boss直聘 -->
+
+<!-- 顶部筛选栏 - 独立在container外 -->
+<view class="filter-bar">
+  <view class="filter-left" bindtap="toggleCertifiedFilter">
+    <text class="filter-text {{filterCertified ? 'active' : ''}}">{{filterCertified ? '✓ ' : ''}}认证甲方</text>
+  </view>
+  <view class="filter-right" bindtap="showSortOptions">
+    <text class="filter-text">{{sortOrder === 'desc' ? '最新发布' : '最早发布'}} ▼</text>
+  </view>
+</view>
+
+<!-- 技能标签筛选栏 -->
+<scroll-view class="skill-filter-bar" scroll-x enable-flex>
+  <view 
+    class="skill-filter-item {{selectedSkill === '' ? 'active' : ''}}" 
+    bindtap="selectSkillFilter" 
+    data-skill=""
+  >
+    <text>全部</text>
+  </view>
+  <view 
+    wx:for="{{skillOptions}}" 
+    wx:key="*this" 
+    class="skill-filter-item {{selectedSkill === item ? 'active' : ''}}" 
+    bindtap="selectSkillFilter" 
+    data-skill="{{item}}"
+  >
+    <text>{{item}}</text>
+  </view>
+</scroll-view>
+
+<view class="container">
+  <view class="job-list">
+    <view 
+      wx:for="{{jobList}}" 
+      wx:key="_id" 
+      class="job-card" 
+      bindtap="goJobDetail" 
+      data-id="{{item._id}}"
+    >
+      <!-- 左侧信息 -->
+      <view class="job-main">
+        <view class="job-header">
+          <text class="job-title">{{item.title}}</text>
+          <view class="cert-tag" wx:if="{{item.employerCertified}}">
+            <text>已认证</text>
+          </view>
+        </view>
+        
+        <!-- 需求描述 -->
+        <view class="job-desc">
+          <text>{{item.description}}</text>
+        </view>
+        
+        <!-- 技能标签 -->
+        <view class="job-tags">
+          <text wx:for="{{item.skills}}" wx:for-item="skill" wx:key="*this" class="skill-tag">{{skill}}</text>
+        </view>
+        
+        <!-- 底部信息 -->
+        <view class="job-meta">
+          <text class="job-time">{{item.createTimeStr || '刚刚发布'}}</text>
+        </view>
+      </view>
+      
+      <!-- 右侧薪资 -->
+      <view class="job-salary">
+        <text>{{item.salary || '面议'}}</text>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view wx:if="{{!loading && jobList.length === 0}}" class="empty-state">
+      <view class="empty-icon">🎵</view>
+      <text class="empty-title">暂无需求</text>
+      <text class="empty-desc">暂时没有实践需求，请稍后再看</text>
+    </view>
+    
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-state">
+      <view class="loading-icon"></view>
+      <text>加载中...</text>
+    </view>
+    
+    <!-- 没有更多 -->
+    <view wx:if="{{!hasMore && jobList.length > 0}}" class="no-more">
+      <text>—— 已经到底了 ——</text>
+    </view>
+  </view>
+</view>
+
+<!-- 排序选择器弹窗 -->
+<view class="sort-picker-mask" wx:if="{{showSortPicker}}" bindtap="hideSortPicker"></view>
+<view class="sort-picker {{showSortPicker ? 'show' : ''}}">
+  <view class="picker-header">
+    <text>选择排序方式</text>
+    <view class="close-btn" bindtap="hideSortPicker">×</view>
+  </view>
+  <view class="picker-options">
+    <view 
+      wx:for="{{sortOptions}}" 
+      wx:key="value" 
+      class="picker-option {{sortOrder === item.value ? 'active' : ''}}"
+      bindtap="selectSort"
+      data-value="{{item.value}}"
+    >
+      <text>{{item.label}}</text>
+      <text class="check-mark" wx:if="{{sortOrder === item.value}}">✓</text>
+    </view>
+  </view>
+</view>
