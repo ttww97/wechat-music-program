@@ -1,0 +1,9 @@
+{
+  "name": "adminReview",
+  "version": "1.0.0",
+  "description": "管理员审核操作（认证审核、评论审核）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

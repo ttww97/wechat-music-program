@@ -7,8 +7,9 @@ Page({
   data: {
     currentUser: null,
     isLoggedIn: false,
-    needCertify: false,  // 是否需要认证
-    unreadCount: 0       // 未读消息数
+    needCertify: false,      // 是否需要认证
+    unreadCount: 0,          // 未读聊天消息数
+    notificationCount: 0     // 未读系统通知数（认证/评论审核结果）
   },
 
   onLoad() {
@@ -18,6 +19,7 @@ Page({
   onShow() {
     this.loadUserInfo()
     this.loadUnreadCount()
+    this.loadNotificationCount()  // 加载未读通知数
   },
 
   // 加载用户信息
@@ -160,9 +162,41 @@ Page({
     })
   },
 
+  // 加载未读通知数（来自 notifications 集合）
+  async loadNotificationCount() {
+    const currentUser = app.globalData.currentUser
+    if (!currentUser || !currentUser._openid) return
+
+    try {
+      const db = wx.cloud.database()
+      const res = await db.collection('notifications')
+        .where({ isRead: false })
+        .count()
+
+      const count = res.total || 0
+      this.setData({ notificationCount: count })
+
+      // 合并消息未读数和通知未读数显示在 tabBar
+      // 此处简单地将通知数覆盖在 tabBar 上（如已有聊天未读数，以较大值为准）
+      const total = count + (this.data.unreadCount || 0)
+      if (total > 0) {
+        wx.setTabBarBadge({ index: 2, text: total > 99 ? '99+' : String(total) })
+      } else {
+        wx.removeTabBarBadge({ index: 2 })
+      }
+    } catch (err) {
+      console.error('加载通知数失败', err)
+    }
+  },
+
   // 查看我的评论
   goMyComments() {
-    wx.showToast({ title: '功能开发中', icon: 'none' })
+    wx.navigateTo({ url: '/pages/myComments/myComments' })
+  },
+
+  // 查看消息通知
+  goNotifications() {
+    wx.navigateTo({ url: '/pages/notifications/notifications' })
   },
 
   // 退出登录

@@ -8,6 +8,8 @@
     "pages/certification/certification",
     "pages/comment/comment",
     "pages/myJobs/myJobs",
+    "pages/myComments/myComments",
+    "pages/notifications/notifications",
     "pages/chat/chat",
     "pages/chatList/chatList",
     "pages/example/index"

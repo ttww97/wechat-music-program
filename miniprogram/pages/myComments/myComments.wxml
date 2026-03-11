@@ -1,0 +1,59 @@
+<!-- myComments.wxml -->
+<view class="container">
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-state">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{isEmpty}}" class="empty-state">
+    <text class="empty-icon">💬</text>
+    <text class="empty-title">暂无评论</text>
+    <text class="empty-desc">完成央音认证后，即可对实践需求发表评价</text>
+  </view>
+
+  <!-- 评论列表 -->
+  <view wx:else>
+    <view
+      wx:for="{{commentList}}"
+      wx:key="_id"
+      class="comment-card"
+      bindtap="goJobDetail"
+      data-job-id="{{item.jobId}}"
+    >
+      <!-- 头部：评分 + 状态 -->
+      <view class="card-header">
+        <!-- 星级 -->
+        <view class="stars-row">
+          <text class="star {{item.rating >= 1 ? 'star-filled' : ''}}">★</text>
+          <text class="star {{item.rating >= 2 ? 'star-filled' : ''}}">★</text>
+          <text class="star {{item.rating >= 3 ? 'star-filled' : ''}}">★</text>
+          <text class="star {{item.rating >= 4 ? 'star-filled' : ''}}">★</text>
+          <text class="star {{item.rating >= 5 ? 'star-filled' : ''}}">★</text>
+          <text class="rating-num">{{item.rating}} 分</text>
+        </view>
+        <!-- 审核状态徽章 -->
+        <view class="status-badge" style="background-color: {{item.statusColor}}20; color: {{item.statusColor}};">
+          <text>{{item.statusText}}</text>
+        </view>
+      </view>
+
+      <!-- 评论内容 -->
+      <text class="comment-content">{{item.content}}</text>
+
+      <!-- 底部：时间 -->
+      <view class="card-footer">
+        <text class="comment-time">{{item.createTimeStr}}</text>
+        <text class="view-job">查看需求 ›</text>
+      </view>
+
+      <!-- 拒绝原因（仅 rejected 时显示） -->
+      <view wx:if="{{item.status === 'rejected' && item.rejectReason}}" class="reject-reason">
+        <text class="reject-label">未通过原因：</text>
+        <text class="reject-text">{{item.rejectReason}}</text>
+      </view>
+    </view>
+  </view>
+
+</view>

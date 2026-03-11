@@ -2,6 +2,8 @@
 // AI生成：中央音乐学院实践平台MVP - 需求列表页 | 日期：2026-02-16
 // 风格参考：Boss直聘
 
+// 修改记录：2026-03-11 - 添加关键词搜索功能
+
 const app = getApp()
 
 Page({
@@ -11,22 +13,26 @@ Page({
     hasMore: true,
     page: 0,
     pageSize: 10,
-    
+
     // 筛选条件
     filterCertified: false,
-    sortOrder: 'desc', // desc=最新优先, asc=最早优先
-    selectedSkill: '', // 选中的技能标签
-    
+    sortOrder: 'desc', // desc=最新优先, asc=最早发布
+    selectedSkill: '',  // 选中的技能标签
+
+    // 搜索关键词（按标题搜索，Cloud DB RegExp 查询）
+    searchKeyword: '',   // 输入框当前值（实时绑定）
+    activeKeyword: '',   // 已提交生效的关键词
+
     // 技能选项
     skillOptions: ['钢琴', '小提琴', '大提琴', '声乐', '古筝', '二胡', '琴童', '合唱', '伴奏', '乐理', '作曲'],
-    
+
     // 排序选项
     sortOptions: [
       { value: 'desc', label: '最新发布' },
       { value: 'asc', label: '最早发布' }
     ],
     showSortPicker: false,
-    
+
     currentUser: null
   },
 
@@ -79,12 +85,22 @@ Page({
       const _ = db.command
       whereCondition.skills = _.elemMatch(_.eq(this.data.selectedSkill))
     }
-    
+
+    // 关键词搜索：通过 Cloud DB 正则表达式匹配标题（不区分大小写）
+    // Cloud DB 支持 db.RegExp，对标题做模糊匹配
+    const keyword = this.data.activeKeyword.trim()
+    if (keyword) {
+      whereCondition.title = db.RegExp({
+        regexp: keyword,
+        options: 'i'  // 忽略大小写
+      })
+    }
+
     // 根据排序选项排序
     const orderDirection = this.data.sortOrder
-    
+
     console.log('查询条件:', whereCondition)
-    
+
     db.collection('jobs')
       .where(whereCondition)
       .orderBy('createTime', orderDirection)
@@ -176,7 +192,28 @@ Page({
     })
   },
 
-  // 登录
+  // ── 搜索相关方法 ─────────────────────────────────────────────
+
+  // 输入框实时变化（仅更新 searchKeyword，不触发查询）
+  onSearchInput(e) {
+    this.setData({ searchKeyword: e.detail.value })
+  },
+
+  // 点击搜索按钮 / 键盘回车 → 触发搜索
+  submitSearch() {
+    const keyword = this.data.searchKeyword.trim()
+    this.setData({ activeKeyword: keyword })
+    this.loadJobList(true)
+  },
+
+  // 清空搜索
+  clearSearch() {
+    this.setData({ searchKeyword: '', activeKeyword: '' })
+    this.loadJobList(true)
+  },
+
+  // ── 登录 ─────────────────────────────────────────────────────
+
   handleLogin() {
     wx.showLoading({ title: '登录中...' })
     app.login().then(result => {

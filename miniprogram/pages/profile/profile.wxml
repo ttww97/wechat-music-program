@@ -57,6 +57,20 @@
       </view>
     </view>
 
+    <!-- 通知入口（认证/评论审核结果） -->
+    <view class="menu-item" bindtap="goNotifications">
+      <view class="menu-left">
+        <text class="menu-icon">🔔</text>
+        <text class="menu-text">消息通知</text>
+      </view>
+      <view class="menu-right">
+        <view class="unread-badge" wx:if="{{notificationCount > 0}}">
+          <text>{{notificationCount > 99 ? '99+' : notificationCount}}</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
     <!-- 认证入口 -->
     <view class="menu-item" bindtap="goCertify" wx:if="{{needCertify}}">
       <view class="menu-left">

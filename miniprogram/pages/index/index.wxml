@@ -1,5 +1,30 @@
 <!--index.wxml-->
 <!-- AI生成：中央音乐学院实践平台MVP - 需求列表页 | 风格参考：Boss直聘 -->
+<!-- 修改记录：2026-03-11 - 添加关键词搜索栏 -->
+
+<!-- 搜索栏 -->
+<view class="search-bar">
+  <view class="search-input-wrap">
+    <text class="search-icon">🔍</text>
+    <input
+      class="search-input"
+      placeholder="搜索需求标题..."
+      value="{{searchKeyword}}"
+      bindinput="onSearchInput"
+      bindconfirm="submitSearch"
+      confirm-type="search"
+    />
+    <!-- 清空按钮（有内容时显示） -->
+    <view wx:if="{{searchKeyword}}" class="search-clear" bindtap="clearSearch">✕</view>
+  </view>
+  <button class="search-btn" bindtap="submitSearch" size="mini">搜索</button>
+</view>
+
+<!-- 搜索结果提示（关键词生效时显示） -->
+<view wx:if="{{activeKeyword}}" class="search-hint">
+  <text>搜索「{{activeKeyword}}」的结果</text>
+  <text class="clear-hint" bindtap="clearSearch"> 清除</text>
+</view>
 
 <!-- 顶部筛选栏 - 独立在container外 -->
 <view class="filter-bar">

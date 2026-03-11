@@ -1,0 +1,75 @@
+/* notifications.wxss */
+.container {
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+}
+
+.loading-state {
+  text-align: center;
+  padding-top: 120rpx;
+  color: #bbb;
+  font-size: 28rpx;
+}
+
+.empty-state {
+  text-align: center;
+  padding-top: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-icon  { font-size: 80rpx; margin-bottom: 20rpx; }
+.empty-title { font-size: 32rpx; color: #555; margin-bottom: 12rpx; }
+.empty-desc  { font-size: 26rpx; color: #aaa; line-height: 1.5; padding: 0 60rpx; }
+
+/* 通知条目 */
+.notification-item {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+
+.notification-item.unread {
+  background-color: #f0f7ff;  /* 未读：浅蓝底 */
+}
+
+.notif-icon {
+  font-size: 44rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.notif-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.notif-content {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 10rpx;
+}
+
+.notif-time {
+  font-size: 24rpx;
+  color: #bbb;
+}
+
+/* 未读红点 */
+.unread-dot {
+  width: 16rpx;
+  height: 16rpx;
+  background-color: #f44336;
+  border-radius: 50%;
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+}

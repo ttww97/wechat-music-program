@@ -1,113 +1,98 @@
-// AI生成：中央音乐学院实践平台MVP | 日期：2026-02-16
-// 修改前请确认：已开启云开发环境 | 数据库权限：仅创建者可读写
+// get_job_detail 云函数
+// 功能：安全获取需求详情，根据调用者权限动态过滤联系方式
+// 修改记录：
+//   2026-02-16 - 初始版本
+//   2026-03-11 - 修复：甲方认证检查同时支持新字段(employerCertStatus)和旧字段(certStatus)
 
 const cloud = require('wx-server-sdk')
 
-cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
-})
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const db = cloud.database()
-const _ = db.command
 
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
-  const jobId = event.jobId
   const openId = wxContext.OPENID
+  const { jobId } = event
 
   if (!jobId) {
-    return {
-      code: 400,
-      msg: '缺少参数 jobId'
-    }
+    return { code: 400, msg: '缺少参数 jobId' }
   }
 
   try {
-    // 1. 查询需求详情
+    // ── 1. 查询需求详情 ──────────────────────────────────────
+
     const jobRes = await db.collection('jobs').doc(jobId).get()
     const job = jobRes.data
 
-    // 检查需求状态
     if (job.status !== 'active') {
-      return {
-        code: 404,
-        msg: '需求不存在或已下架'
-      }
+      return { code: 404, msg: '需求不存在或已下架' }
     }
 
-    // 2. 查询调用者用户信息（获取认证状态）
+    // ── 2. 获取调用者的认证状态（用于判断是否可见联系方式）──
+
     let callerIsTalent = false
     let callerTalentCertStatus = 'unverified'
-    
-    // 尝试获取用户信息，如果不存在则默认为未认证
-    try {
-      const userRes = await db.collection('users').where({
-        _openid: openId
-      }).get()
 
+    try {
+      const userRes = await db.collection('users').where({ _openid: openId }).get()
       if (userRes.data.length > 0) {
         const user = userRes.data[0]
-        callerIsTalent = user.isTalent || false
-        callerTalentCertStatus = user.talentCertStatus || 'unverified'
+        // 兼容新旧字段
+        callerIsTalent = user.isTalent === true || user.role === 'student'
+        callerTalentCertStatus = user.talentCertStatus
+          || (user.role === 'student' ? user.certStatus : 'unverified')
       }
     } catch (err) {
+      // 查询失败视为未认证，继续处理
       console.error('获取调用者信息失败', err)
-      // 继续执行，视为未认证用户
     }
 
-    // 3. 处理联系方式显示逻辑
-    // 规则：
-    // - 若调用者为已认证音乐人才(isTalent + talentCertStatus=approved) → 返回完整contact
-    // - 若调用者为发布者本人 → 返回完整contact
-    // - 否则隐藏
-    let showContact = false
-    const isOwner = openId && job._openid && openId === job._openid
+    // ── 3. 联系方式显示规则 ──────────────────────────────────
+    //
+    // 可见条件（满足其一即可）：
+    //   a. 已认证音乐人才：isTalent=true 且 talentCertStatus='approved'
+    //   b. 发布者本人：调用者 openid === 需求发布者 openid
+
     const isTalentApproved = callerIsTalent && callerTalentCertStatus === 'approved'
-    
-    if (isTalentApproved || isOwner) {
-      showContact = true
+    const isOwner = openId && job._openid && openId === job._openid
+
+    if (!isTalentApproved && !isOwner) {
+      job.contact = '完成央音认证后可见'
     }
 
-    if (!showContact) {
-      job.contact = "完成央音认证后可见"
-    }
+    // ── 4. 获取甲方认证状态（用于展示认证徽章）────────────
 
-    // 4. 获取发布者认证信息（可选，如果job中没有存储发布者认证状态，可能需要额外查询发布者信息）
-    // 假设 job 数据中包含 employerId，或者直接在 job 中存储了 isCertified
-    // 这里为了 MVP 简化，假设 job 数据结构中已经包含了发布者的基本信息，或者我们需要去 users 表查一下发布者
-    // 根据需求描述：返回数据包含 employer认证徽章标识（isCertified: true/false）
-    
     let isEmployerCertified = false
+
     if (job._openid) {
-        try {
-            const employerRes = await db.collection('users').where({
-                _openid: job._openid
-            }).get()
-            if (employerRes.data.length > 0) {
-                isEmployerCertified = (employerRes.data[0].certStatus === 'approved')
-            }
-        } catch (e) {
-            console.error('获取发布者信息失败', e)
+      try {
+        const employerRes = await db.collection('users').where({ _openid: job._openid }).get()
+        if (employerRes.data.length > 0) {
+          const employer = employerRes.data[0]
+          // 兼容新旧字段：优先读 employerCertStatus，降级到 certStatus
+          isEmployerCertified = employer.employerCertStatus === 'approved'
+            || (employer.employerCertStatus === undefined && employer.certStatus === 'approved')
         }
+      } catch (err) {
+        console.error('获取甲方信息失败', err)
+      }
     }
 
-    // 组装返回数据
     return {
       code: 200,
       data: {
         ...job,
-        employer: {
-            isCertified: isEmployerCertified
-        }
+        employer: { isCertified: isEmployerCertified }
       }
     }
 
   } catch (err) {
     console.error('get_job_detail 异常', err)
-    return {
-      code: 500,
-      msg: '服务器内部错误',
-      error: err
+    // doc().get() 记录不存在时抛出异常，视为 404
+    if (err.errCode === -502005 || err.message === 'record not found') {
+      return { code: 404, msg: '需求不存在' }
     }
+    return { code: 500, msg: '服务器内部错误', error: err }
   }
 }
