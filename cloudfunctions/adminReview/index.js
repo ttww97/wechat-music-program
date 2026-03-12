@@ -14,10 +14,13 @@ exports.main = async (event, context) => {
   const adminOpenId = wxContext.OPENID
   const { action } = event
 
-  // ── 1. 管理员鉴权 ─────────────────────────────────────────
+  // ── 1. 管理员 / 审核员鉴权 ────────────────────────────────
 
-  const adminRes = await db.collection('admins').where({ _openid: adminOpenId }).get()
-  if (adminRes.data.length === 0) {
+  const [adminRes, reviewerRes] = await Promise.all([
+    db.collection('admins').where({ _openid: adminOpenId }).get(),
+    db.collection('users').where({ _openid: adminOpenId, isReviewer: true }).get()
+  ])
+  if (adminRes.data.length === 0 && reviewerRes.data.length === 0) {
     return { code: 403, msg: '无管理员权限，操作被拒绝' }
   }
 

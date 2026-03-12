@@ -8,6 +8,7 @@ Page({
     openid: '',
     isTalent: false,   // 是否为音乐人才
     isEmployer: false, // 是否为甲方
+    isReviewer: false, // 是否为审核员
     submitting: false
   },
 
@@ -33,12 +34,14 @@ Page({
       this.setData({ isTalent: !this.data.isTalent })
     } else if (role === 'employer') {
       this.setData({ isEmployer: !this.data.isEmployer })
+    } else if (role === 'reviewer') {
+      this.setData({ isReviewer: !this.data.isReviewer })
     }
   },
 
   // 确认注册
   confirmRegister() {
-    if (!this.data.isTalent && !this.data.isEmployer) {
+    if (!this.data.isTalent && !this.data.isEmployer && !this.data.isReviewer) {
       wx.showToast({
         title: '请至少选择一个身份',
         icon: 'none'
@@ -55,6 +58,7 @@ Page({
     app.registerUser({
       isTalent: this.data.isTalent,
       isEmployer: this.data.isEmployer,
+      isReviewer: this.data.isReviewer,
       realName: '',
       certImgs: [],
       talentCertStatus: this.data.isTalent ? 'unverified' : null,

@@ -1,0 +1,239 @@
+/* admin.wxss */
+
+page {
+  background-color: #f5f5f5;
+}
+
+.container {
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+/* 无权限 */
+.no-auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.no-auth-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+}
+
+.no-auth-text {
+  font-size: 34rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.no-auth-desc {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* Tab 栏 */
+.tab-bar {
+  display: flex;
+  background-color: #fff;
+  border-bottom: 1rpx solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 0;
+  font-size: 30rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #4A90D9;
+  font-weight: bold;
+  border-bottom: 4rpx solid #4A90D9;
+}
+
+.tab-badge {
+  min-width: 32rpx;
+  height: 32rpx;
+  background-color: #f56c6c;
+  border-radius: 16rpx;
+  padding: 0 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20rpx;
+  margin-left: 8rpx;
+}
+
+/* 列表 */
+.list {
+  padding: 20rpx 0;
+}
+
+/* 空状态 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 认证卡片 */
+.cert-card,
+.comment-card {
+  background-color: #fff;
+  margin: 0 0 20rpx 0;
+  padding: 30rpx;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.card-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.cert-types {
+  display: flex;
+  gap: 10rpx;
+}
+
+.cert-type-tag {
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.cert-type-tag.talent {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.cert-type-tag.employer {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+/* 认证材料区域 */
+.cert-section {
+  margin-bottom: 24rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.section-label {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+  display: block;
+}
+
+.cert-imgs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.cert-img {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #eee;
+}
+
+.no-img {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+/* 评论内容 */
+.comment-content {
+  background-color: #f9f9f9;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  margin-bottom: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+.comment-meta {
+  margin-bottom: 16rpx;
+}
+
+.meta-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.rating {
+  display: flex;
+}
+
+.star {
+  color: #f5a623;
+  font-size: 28rpx;
+}
+
+/* 操作按钮 */
+.action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+}
+
+.btn {
+  font-size: 26rpx !important;
+  padding: 0 30rpx !important;
+  border-radius: 30rpx !important;
+  line-height: 56rpx !important;
+  height: 56rpx !important;
+}
+
+.btn.approve {
+  background-color: #4A90D9 !important;
+  color: #fff !important;
+}
+
+.btn.reject {
+  background-color: #fff !important;
+  color: #f56c6c !important;
+  border: 1rpx solid #f56c6c !important;
+}
+
+/* 加载 */
+.loading {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 28rpx;
+}

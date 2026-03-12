@@ -7,6 +7,7 @@ Page({
   data: {
     currentUser: null,
     isLoggedIn: false,
+    isAdmin: false,          // 是否为管理员/审核员
     needCertify: false,      // 是否需要认证
     unreadCount: 0,          // 未读聊天消息数
     notificationCount: 0     // 未读系统通知数（认证/评论审核结果）
@@ -19,7 +20,8 @@ Page({
   onShow() {
     this.loadUserInfo()
     this.loadUnreadCount()
-    this.loadNotificationCount()  // 加载未读通知数
+    this.loadNotificationCount()
+    this.checkAdminRole()
   },
 
   // 加载用户信息
@@ -194,6 +196,37 @@ Page({
     wx.navigateTo({ url: '/pages/myComments/myComments' })
   },
 
+  // 检查是否为管理员或审核员
+  async checkAdminRole() {
+    const currentUser = app.globalData.currentUser
+    if (!currentUser || !currentUser._openid) {
+      this.setData({ isAdmin: false })
+      return
+    }
+
+    // 用户本身标记了 isReviewer
+    if (currentUser.isReviewer) {
+      this.setData({ isAdmin: true })
+      return
+    }
+
+    // 检查 admins 集合
+    try {
+      const db = wx.cloud.database()
+      const res = await db.collection('admins').where({
+        _openid: currentUser._openid
+      }).get()
+      this.setData({ isAdmin: res.data.length > 0 })
+    } catch (err) {
+      console.error('检查管理员权限失败', err)
+    }
+  },
+
+  // 进入审核管理页
+  goAdmin() {
+    wx.navigateTo({ url: '/pages/admin/admin' })
+  },
+
   // 查看消息通知
   goNotifications() {
     wx.navigateTo({ url: '/pages/notifications/notifications' })
@@ -233,6 +266,7 @@ Page({
     const roles = []
     if (user.isTalent) roles.push('音乐人才')
     if (user.isEmployer) roles.push('甲方')
+    if (user.isReviewer) roles.push('审核员')
     return roles.join(' / ') || '未知'
   }
 })
