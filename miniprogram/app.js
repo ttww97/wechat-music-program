@@ -116,6 +116,18 @@ App({
         wx.setStorageSync('currentUser', newUser);
         return newUser;
       });
+    }).then(newUser => {
+      // 如果用户选了审核员角色，将其写入 admins 集合
+      if (userData.isReviewer && newUser._openid) {
+        db.collection('admins').add({
+          data: {
+            _openid: newUser._openid,
+            role: 'reviewer',
+            createTime: db.serverDate()
+          }
+        }).catch(err => console.error('写入 admins 集合失败', err));
+      }
+      return newUser;
     });
   },
 

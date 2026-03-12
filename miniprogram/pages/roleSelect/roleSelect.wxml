@@ -22,9 +22,9 @@
     </view>
 
     <!-- 甲方角色 -->
-    <view 
-      class="role-card {{isEmployer ? 'selected' : ''}}" 
-      bindtap="toggleRole" 
+    <view
+      class="role-card {{isEmployer ? 'selected' : ''}}"
+      bindtap="toggleRole"
       data-role="employer"
     >
       <view class="role-icon">🏢</view>
@@ -33,6 +33,20 @@
         <text class="role-desc">需要招募音乐人才，发布实践需求</text>
       </view>
       <view class="check-mark" wx:if="{{isEmployer}}">✓</view>
+    </view>
+
+    <!-- 审核员角色 -->
+    <view
+      class="role-card {{isReviewer ? 'selected' : ''}}"
+      bindtap="toggleRole"
+      data-role="reviewer"
+    >
+      <view class="role-icon">🛡️</view>
+      <view class="role-info">
+        <text class="role-title">我是审核员</text>
+        <text class="role-desc">负责审核用户资质认证与评论内容</text>
+      </view>
+      <view class="check-mark" wx:if="{{isReviewer}}">✓</view>
     </view>
   </view>
 
@@ -45,7 +59,7 @@
       class="confirm-btn" 
       type="primary" 
       bindtap="confirmRegister"
-      disabled="{{(!isTalent && !isEmployer) || submitting}}"
+      disabled="{{(!isTalent && !isEmployer && !isReviewer) || submitting}}"
     >
       {{submitting ? '注册中...' : '确认并继续认证'}}
     </button>

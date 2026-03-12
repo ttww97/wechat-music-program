@@ -21,11 +21,20 @@ const { main } = require('../cloudfunctions/adminReview/index')
 // 测试固件（Fixtures）
 // ================================================================
 
-const ADMIN_OPENID   = 'openid_admin'
-const TALENT_OPENID  = 'openid_talent'
-const VISITOR_OPENID = 'openid_visitor'
+const ADMIN_OPENID    = 'openid_admin'
+const REVIEWER_OPENID = 'openid_reviewer'
+const TALENT_OPENID   = 'openid_talent'
+const VISITOR_OPENID  = 'openid_visitor'
 
 const ADMIN_RECORD = { _id: 'admin_1', _openid: ADMIN_OPENID }
+
+/** 审核员用户（不在 admins 集合，但 isReviewer = true） */
+const REVIEWER_USER = {
+  _id: 'user_reviewer',
+  _openid: REVIEWER_OPENID,
+  realName: '审核员小王',
+  isReviewer: true
+}
 
 /** 待审核音乐人才认证 */
 const PENDING_TALENT_USER = {
@@ -61,7 +70,7 @@ const PENDING_COMMENT = {
 function baseData() {
   return {
     admins: [ADMIN_RECORD],
-    users: [PENDING_TALENT_USER, PENDING_EMPLOYER_USER],
+    users: [PENDING_TALENT_USER, PENDING_EMPLOYER_USER, REVIEWER_USER],
     comments: [PENDING_COMMENT],
     notifications: []
   }
@@ -99,6 +108,12 @@ describe('adminReview 云函数', () => {
       cloud.setup(baseData(), ADMIN_OPENID)
       const result = await main({ action: 'invalidAction' })
       expect(result.code).toBe(400)
+    })
+
+    test('审核员（isReviewer）调用 → 不返回 403', async () => {
+      cloud.setup(baseData(), REVIEWER_OPENID)
+      const result = await main({ action: 'listPendingCerts' })
+      expect(result.code).not.toBe(403)
     })
   })
 

@@ -12,6 +12,7 @@
     "pages/notifications/notifications",
     "pages/chat/chat",
     "pages/chatList/chatList",
+    "pages/admin/admin",
     "pages/example/index"
   ],
   "window": {

@@ -1,0 +1,107 @@
+<!-- admin.wxml -->
+<view class="container">
+  <!-- 无权限提示 -->
+  <view class="no-auth" wx:if="{{!hasPermission}}">
+    <text class="no-auth-icon">🔒</text>
+    <text class="no-auth-text">您没有审核权限</text>
+    <text class="no-auth-desc">仅管理员和审核员可访问</text>
+  </view>
+
+  <block wx:else>
+    <!-- Tab 切换 -->
+    <view class="tab-bar">
+      <view class="tab-item {{activeTab === 'certs' ? 'active' : ''}}" bindtap="switchTab" data-tab="certs">
+        <text>资质审核</text>
+        <view class="tab-badge" wx:if="{{pendingCerts.length > 0}}">{{pendingCerts.length}}</view>
+      </view>
+      <view class="tab-item {{activeTab === 'comments' ? 'active' : ''}}" bindtap="switchTab" data-tab="comments">
+        <text>评论审核</text>
+        <view class="tab-badge" wx:if="{{pendingComments.length > 0}}">{{pendingComments.length}}</view>
+      </view>
+    </view>
+
+    <!-- 资质审核列表 -->
+    <view class="list" wx:if="{{activeTab === 'certs'}}">
+      <view class="empty" wx:if="{{pendingCerts.length === 0 && !loading}}">
+        <text class="empty-icon">✅</text>
+        <text class="empty-text">暂无待审核认证</text>
+      </view>
+      <view class="cert-card" wx:for="{{pendingCerts}}" wx:key="_id">
+        <view class="card-header">
+          <text class="card-name">{{item.realName || '未填写姓名'}}</text>
+          <view class="cert-types">
+            <text class="cert-type-tag talent" wx:if="{{item.talentCertStatus === 'pending'}}">人才认证</text>
+            <text class="cert-type-tag employer" wx:if="{{item.employerCertStatus === 'pending'}}">甲方认证</text>
+          </view>
+        </view>
+
+        <!-- 人才认证材料 -->
+        <view class="cert-section" wx:if="{{item.talentCertStatus === 'pending'}}">
+          <text class="section-label">人才认证材料：</text>
+          <view class="cert-imgs">
+            <image wx:for="{{item.talentCertImgs}}" wx:for-item="img" wx:key="*this"
+              class="cert-img" src="{{img}}" mode="aspectFill" bindtap="previewImage"
+              data-urls="{{item.talentCertImgs}}" data-current="{{img}}" />
+            <text class="no-img" wx:if="{{!item.talentCertImgs || item.talentCertImgs.length === 0}}">未上传材料</text>
+          </view>
+          <view class="action-row">
+            <button class="btn approve" size="mini" bindtap="handleApprove"
+              data-user-id="{{item._id}}" data-cert-type="talent">通过</button>
+            <button class="btn reject" size="mini" bindtap="handleReject"
+              data-user-id="{{item._id}}" data-cert-type="talent">拒绝</button>
+          </view>
+        </view>
+
+        <!-- 甲方认证材料 -->
+        <view class="cert-section" wx:if="{{item.employerCertStatus === 'pending'}}">
+          <text class="section-label">甲方认证材料：</text>
+          <view class="cert-imgs">
+            <image wx:for="{{item.employerCertImgs}}" wx:for-item="img" wx:key="*this"
+              class="cert-img" src="{{img}}" mode="aspectFill" bindtap="previewImage"
+              data-urls="{{item.employerCertImgs}}" data-current="{{img}}" />
+            <text class="no-img" wx:if="{{!item.employerCertImgs || item.employerCertImgs.length === 0}}">未上传材料</text>
+          </view>
+          <view class="action-row">
+            <button class="btn approve" size="mini" bindtap="handleApprove"
+              data-user-id="{{item._id}}" data-cert-type="employer">通过</button>
+            <button class="btn reject" size="mini" bindtap="handleReject"
+              data-user-id="{{item._id}}" data-cert-type="employer">拒绝</button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评论审核列表 -->
+    <view class="list" wx:if="{{activeTab === 'comments'}}">
+      <view class="empty" wx:if="{{pendingComments.length === 0 && !loading}}">
+        <text class="empty-icon">✅</text>
+        <text class="empty-text">暂无待审核评论</text>
+      </view>
+      <view class="comment-card" wx:for="{{pendingComments}}" wx:key="_id">
+        <view class="card-header">
+          <text class="card-name">评论者：{{item._openid}}</text>
+          <view class="rating">
+            <text class="star" wx:for="{{item.rating}}" wx:for-item="s" wx:key="*this">★</text>
+          </view>
+        </view>
+        <view class="comment-content">
+          <text>{{item.content}}</text>
+        </view>
+        <view class="comment-meta">
+          <text class="meta-text">岗位ID：{{item.jobId}}</text>
+        </view>
+        <view class="action-row">
+          <button class="btn approve" size="mini" bindtap="handleApproveComment"
+            data-comment-id="{{item._id}}">通过</button>
+          <button class="btn reject" size="mini" bindtap="handleRejectComment"
+            data-comment-id="{{item._id}}">拒绝</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </block>
+</view>

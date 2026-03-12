@@ -19,7 +19,8 @@
           <text class="user-name">{{currentUser.realName || '用户'}}</text>
           <view class="role-tag talent" wx:if="{{currentUser.isTalent}}">音乐人才</view>
           <view class="role-tag employer" wx:if="{{currentUser.isEmployer}}">甲方</view>
-          <view class="role-tag none" wx:if="{{!currentUser.isTalent && !currentUser.isEmployer}}">未选择角色</view>
+          <view class="role-tag reviewer" wx:if="{{currentUser.isReviewer}}">审核员</view>
+          <view class="role-tag none" wx:if="{{!currentUser.isTalent && !currentUser.isEmployer && !currentUser.isReviewer}}">未选择角色</view>
         </view>
         <!-- 认证状态 -->
         <view class="cert-row">
@@ -99,6 +100,17 @@
       <view class="menu-left">
         <text class="menu-icon">⭐</text>
         <text class="menu-text">我的评论</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 审核管理（管理员/审核员可见） -->
+    <view class="menu-item" bindtap="goAdmin" wx:if="{{isAdmin}}">
+      <view class="menu-left">
+        <text class="menu-icon">🛡️</text>
+        <text class="menu-text">审核管理</text>
       </view>
       <view class="menu-right">
         <text class="menu-arrow">›</text>
